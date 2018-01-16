@@ -1,8 +1,7 @@
-function ready() {   // Load the function after DOM ready.
-// alert("ready");
+function ready(quarterStart) {   // Load the function after DOM ready.
+if(!document.getElementById("list-id-table")) return;
 var tt = document.getElementById("list-id-table").rows;
 var table = [];
-// alert(tt);
 for (var i = 1; i < tt.length; i++) {
   var r = [];
 
@@ -22,7 +21,7 @@ var cal = ics();
 
 for (var i = 0; i < table.length; i++) {
   var subject, description, location, begin, end, count, rrule, byday, timeDetails;
-  var beginDate = new Date("01/08/2018");
+  var beginDate = new Date(quarterStart);
 
   subject = table[i][0].trim();
   if(subject == "") continue;
@@ -41,20 +40,31 @@ for (var i = 0; i < table.length; i++) {
   count = 10*byday.length;
 
   timeDetails = table[i][8].trim().match(tpattern);
-  if(timeDetails[3]=='p') { timeDetails[1] = String(parseInt(timeDetails[1])+12);}
-  if(timeDetails[6]=='p') { timeDetails[4] = String(parseInt(timeDetails[4])+12);}
+  if(timeDetails[3]=='p' && timeDetails[1]!='12') { timeDetails[1] = String(parseInt(timeDetails[1])+12);}
+  if(timeDetails[6]=='p' && timeDetails[4]!='12') { timeDetails[4] = String(parseInt(timeDetails[4])+12);}
   beginDate.setDate(beginDate.getDate() + (dLookup[byday[0]] - beginDate.getDay()) % 7);
   begin = beginDate.setHours(timeDetails[1],timeDetails[2]);
   end = beginDate.setHours(timeDetails[4],timeDetails[5]);
 
   rrule = {"freq":"WEEKLY", "count":count, "byday":byday};
-  console.log("adding event: "+subject+ " in " + location + " at " + begin+ " to "+ end);
+  console.log("adding event: "+subject+ " in " + location + " at " + begin.toString()+ " to "+ end.toString());
   console.log("Repeat every " + byday);
   cal.addEvent(subject, description, location, begin, end, rrule);
 
 }
 
-cal.download("1.ics");
+cal.download("webreg");
 
 }
-document.onload = ready();
+// document.onload = ready();
+chrome.runtime.onMessage.addListener(
+  function(request, sender, sendResponse) {
+    console.log(sender.tab? "from a content_scripts" + sender.tab.url: "from the extension");
+    if(request.ok == "ok"){
+      ready(request.date);
+    }
+    else {
+      sendResponse({ack:"nck"});
+    }
+  }
+);
