@@ -2,7 +2,7 @@
 "manifest_version": 2,
 
 
-"name": "Get Calendar from Web",
+"name": "Get class schedule from webreg",
 "description": "This extension will download the class schedule in ics format.",
 "version": "1.0",
 
@@ -10,8 +10,9 @@
     "activeTab"
   ],
   "browser_action": {
-    "default_title": "Download the calendar",
-    "default_popup": "popup.html"
+    "default_title": "Download the class schedule",
+    "default_popup": "popup.html",
+    "default_icon": "icon.png"
   },
 
 
