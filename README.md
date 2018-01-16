@@ -7,7 +7,6 @@ calendar app (google calendar, apple calendar, etc.).
 - Then you click the icon of the extension.
 - Insert the starting date of the quarter.
 - Press the save button. The ics file will then automatically download.
-![webreg](webreg.png)
 
 ## Reference
 The ics generation technique is from [nwcell](https://github.com/nwcell/ics.js).
